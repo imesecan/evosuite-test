@@ -1,0 +1,6 @@
+evosuite-tests/
+jars/
+.DS_Store
+copy-files/*/.idea
+*~
+temp
