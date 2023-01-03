@@ -7,3 +7,4 @@ RUN apt update
 RUN apt install less nano zip unzip
 RUN apt install default-jre default-jdk -y
 COPY copy-files /evosuite/
+RUN mkdir -p ~/.m2/repository && cp -r javax ~/.m2/repository

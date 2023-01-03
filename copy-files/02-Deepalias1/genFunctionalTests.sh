@@ -17,16 +17,17 @@ if ! [[ $JOBID =~ $re ]] ; then
      exit 1
 fi
 
+
 SRC=${PWD##*/}
 SEC=60
-PREFIX="securibench micro sanitizers"
-TRG_FUNCTION=calculate
-TRG_CLS=Sanitizers1
+PREFIX=""
+TRG_FUNCTION=foo
+TRG_CLS=EvoDriver
 
 Home=$(pwd)
 DST="${Home}/src/main/java/"
 JAR="evosuite-1.2.0.jar"
-DEPENDENCE="Dependence.jar"
+DEPENDENCE=
 PACKAGE=
 for fld in $PREFIX; do PACKAGE="${PACKAGE}${fld}."; done
 echo "Params: ${SRC} ${SEC} ${JOBID}  ${PREFIX}  ${TRG_CLS}"

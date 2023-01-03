@@ -19,14 +19,14 @@ fi
 
 SRC=${PWD##*/}
 SEC=60
-PREFIX="securibench micro sanitizers"
-TRG_FUNCTION=calculate
-TRG_CLS=Sanitizers1
+PREFIX=""
+TRG_FUNCTION=process
+TRG_CLS=Main
 
 Home=$(pwd)
 DST="${Home}/src/main/java/"
 JAR="evosuite-1.2.0.jar"
-DEPENDENCE="Dependence.jar"
+DEPENDENCE=
 PACKAGE=
 for fld in $PREFIX; do PACKAGE="${PACKAGE}${fld}."; done
 echo "Params: ${SRC} ${SEC} ${JOBID}  ${PREFIX}  ${TRG_CLS}"
@@ -41,8 +41,8 @@ cd $DST
 mkdir -p evosuite-tests
 rm -rf targets
 targets=$(find ./ -name "*.java")
-javac -d targets -cp "${HOME}/.m2/repository"  $targets; 
 
+javac -d targets $targets;
 java -cp "targets" -Xmx1G -Xss1G -jar $JAR -projectCP "targets:${HOME}/.m2/repository" \
      -class ${PACKAGE}${TRG_CLS} -seed ${JOBID} -Dsearch_budget=$SEC \
      -Dstopping_condition=MaxTime > ${Home}/${SRC}.txt

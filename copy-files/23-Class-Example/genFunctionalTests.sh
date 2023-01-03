@@ -31,16 +31,20 @@ DEPENDENCE="23-Dependency-Package.jar"
 PACKAGE=
 for fld in $PREFIX; do PACKAGE="${PACKAGE}${fld}."; done
 echo "Params: ${SRC} ${SEC} ${JOBID}  ${PREFIX}  ${TRG_CLS}"
+cp ../${JAR} $DST
 
-cp ../${JAR} *.jar $DST
+if [[ -n ${DEPENDENCE} ]]; then
+     cd ${HOME}/.m2/repository
+     jar xf /evosuite/${SRC}/${DEPENDENCE}
+fi
 cd $DST
 
 mkdir -p evosuite-tests
 rm -rf targets
 targets=$(find ./ -name "*.java")
-javac -d targets -cp "${DST}${DEPENDENCE}"  $targets; 
+javac -d targets -cp "${HOME}/.m2/repository"  $targets; 
 
-java -cp "targets" -Xmx1G -Xss1G -jar $JAR -projectCP "targets:${DEPENDENCE}" \
+java -cp "targets" -Xmx1G -Xss1G -jar $JAR -projectCP "targets:${HOME}/.m2/repository" \
      -class ${PACKAGE}${TRG_CLS} -seed ${JOBID} -Dsearch_budget=$SEC \
      -Dstopping_condition=MaxTime > ${Home}/${SRC}.txt
 
