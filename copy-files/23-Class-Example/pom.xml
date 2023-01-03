@@ -14,6 +14,12 @@
             <version>4.0.1</version>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>com</groupId>
+            <artifactId>com</artifactId>
+            <scope>compile</scope>
+            <systemPath>${basedir}/23-Dependency-Package.jar</systemPath>
+        </dependency>
 
         <dependency>
             <groupId>org.junit.jupiter</groupId>
