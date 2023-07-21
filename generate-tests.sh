@@ -1,24 +1,24 @@
 #!/bin/bash
 #
 # Usage:
-#   ./generate-tests.sh  CONTAINER RUNTIME  JOBID  PREFIX TARGET_CLASS TARGET_FUNCTION 
+#   ./generate-tests.sh  CONTAINER  RUNTIME  JOBID  PREFIX  TARGET_CLASS  TARGET_FUNCTION 
 #
 # Sample usage:
-#   Ex1:  ./generate-tests.sh  Classify 60   112  "org leakreducer"  Classify  classify
+#   Ex1:  ./generate-tests.sh  Classify  60   112  "org leakreducer"  Classify  classify
 #	Ex2:  ./generate-tests.sh  01-Aliasing-ControlFlow-insecure  60  128  "org leakreducer"  Main  process   
-#	Ex1:  Run Sanitizers for 60 seconds using 112 as the randomization seed 
+#	Ex1:  Run Classify for 60 seconds using 112 as the randomization seed 
 #  
 
 tolower(){
         echo $(echo $1 | tr '[:upper:]' '[:lower:]');
 }
 
-if [[ -z $5 ]]; then
+if [[ -z $2 ]]; then
 	echo " Error: Missing parameter(s). Usage:"
-	echo "  $0   CONTAINER RUNTIME  JOBID  PREFIX  TARGET_CLASS"
+	echo "  $0   CONTAINER JOBID "
 	echo " Sample usage:"
-	echo "  Ex1: $0  Sanitizers   90   128  \"securibench micro sanitizers\"  Sanitizers1"
-	echo "  Ex2: $0  01-Aliasing  90   128 \"\" Main"
+	echo "   ./generate-tests.sh  23-Class-Example  171 "
+	echo " Run test subject 23-Class-Example using 171 as the randomization seed"
 	echo ""
   	exit 0
 fi
@@ -32,20 +32,20 @@ TARGET_FUNCTION=$6
 
 container=$(tolower "$CONTAINER")
 container="$container-${JOBID}"
-echo "Params: ${CONTAINER} ${RUNTIME} ${JOBID} ${TRG_CLS} - ${container}"
+echo "Params: ${CONTAINER} ${JOBID} - ${container}"
 
 date
 mkdir -p evosuite-tests
 
 docker build  -t evosuite  .
 docker run --name ${container}  evosuite  /bin/bash  /evosuite/run.sh  \
-     ${CONTAINER}  ${RUNTIME}  ${JOBID} "${PREFIX}" ${TRG_CLS}
+     	${CONTAINER} ${JOBID}
 
 TRG="${container}:/evosuite/${CONTAINER}-${JOBID}"
+echo "Target is: $TRG"
 docker cp  ${TRG}   "./evosuite-tests/"
 docker rm $container
 
 python3 retrieve-functional-tests.py --trg_prj ${CONTAINER}  --trg_cls ${TRG_CLS} \
-			--trg_function ${TARGET_FUNCTION}  --jobid ${JOBID}  \
-			> evosuite-tests/${TRG_CLS}-${JOBID}-driver-input.txt
+			--trg_function ${TARGET_FUNCTION}  --jobid ${JOBID} 
 date
