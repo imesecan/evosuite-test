@@ -1,11 +1,11 @@
 #!/bin/bash
 #
 # Usage:
-#   ./generate-tests.sh  CONTAINER  RUNTIME  JOBID  TARGET_CLASS  TRG_FUNCTION 
+#   ./generate-tests.sh  CONTAINER  RUNTIME  JOBID  TARGET_CLASS  TRG_FUNCTION  PREFIX
 #
 # Sample usage:
-#   Ex1:  ./generate-tests.sh  Classify  60   112  Classify  classify
-#	Ex2:  ./generate-tests.sh  01-Aliasing-ControlFlow-insecure  60  128   Main  process   
+#   Ex1:  ./generate-tests.sh  Classify  60   112  Classify  classify  "org leakreducer"
+#	Ex2:  ./generate-tests.sh  01-Aliasing-ControlFlow-insecure  60  128   Main  process  "org leakreducer"
 #	Ex1:  Run Classify for 60 seconds using 112 as the randomization seed 
 #  
 
@@ -28,6 +28,7 @@ RUNTIME=$2
 JOBID=$3
 TRG_CLS=$4
 TRG_FUNCTION=$5
+PREFIX=$6
 
 container=$(tolower "$CONTAINER")
 container="$container-${JOBID}"
@@ -37,13 +38,14 @@ date
 mkdir -p evosuite-tests
 
 docker build  -t evosuite  .
-docker run --name ${container}  evosuite  /bin/bash  /evosuite/run.sh  \
-     	${CONTAINER}  ${RUNTIME}  ${JOBID}   ${TRG_CLS} 
+# docker run --name ${container}  evosuite  /bin/bash  /evosuite/run.sh  \
+docker run --name ${container} evosuite /evosuite/run.sh \
+     	${CONTAINER}  ${RUNTIME}  ${JOBID}   ${TRG_CLS}  "${PREFIX}" 
 
 TRG="${container}:/evosuite/${CONTAINER}-${JOBID}"
 echo "Target is: $TRG"
 docker cp  ${TRG}   "./evosuite-tests/"
-docker rm $container
+# docker rm $container
 
 python3 retrieve-functional-tests.py --trg_prj ${CONTAINER}  --trg_cls ${TRG_CLS} \
 			--trg_function ${TRG_FUNCTION}  --jobid ${JOBID} 

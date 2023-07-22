@@ -1,9 +1,9 @@
 #!/bin/bash
 # 
 # Usage:
-#    ./genFunctionalTests.sh  SEC  JOBID  TRG_CLS
+#    ./genFunctionalTests.sh  SEC  JOBID  TRG_CLS  PREFIX
 # Sample Usage:
-#    ./genFunctionalTests.sh  60  182  Main
+#    ./genFunctionalTests.sh  60  182   Main  "org leakreducer"
 #
 # Run the code using jobid 182 (seed is the same as jobid)
 #
@@ -11,8 +11,8 @@
 SEC=$1				# runtime in seconds
 JOBID=$2			# unique id to describe this job
 TRG_CLS=$3			# target class name
+PREFIX=$4			# prefix for package 
 
-PREFIX="org leakreducer" 	# prefix for package 
 SRC=${PWD##*/}
 re='^[0-9]+$'
 if ! [[ $JOBID =~ $re ]] ; then
@@ -51,8 +51,3 @@ TRG_FOLDER=${Home}/${SRC}-${JOBID}
 mv ${Home}/${SRC}.txt  evosuite-report/*   evosuite-tests
 mv evosuite-tests   ${TRG_FOLDER}
 rm -rf evosuite-report targets ${JAR}
-
-# grep -HInr "${TRG_FUNCTION}" ${TRG_FOLDER}/ > tests${JOBID}.txt
-# mv tests${JOBID}.txt ${TRG_FOLDER}/
-# cd ${Home}
-# python3 get_tests.py --trg_function ${TRG_FUNCTION} --trg_project ${SRC} --jobid ${JOBID}
