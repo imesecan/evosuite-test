@@ -1,0 +1,23 @@
+#!/bin/bash
+#
+#SBATCH --constraint=AVX2
+#SBATCH --time=36:20:00   # walltime limit (HH:MM:SS)
+#SBATCH --nodes=1   # number of nodes
+# #SBATCH --ntasks-per-node=2    # 2 processor core(s) per node
+#SBATCH --mem=8G                # MAX memory per node
+#SBATCH --cpus-per-task=2
+#SBATCH --partition=speedy
+#SBATCH --exclude=speedy,speedy2,speedy3
+#SBATCH --mail-user=imesecan@gmail.com   # email address
+#SBATCH --mail-type=END
+#SBATCH --output="out%x-%j.txt" # job standard output file (%j replaced by job id)
+#SBATCH --error="err%x-%j.txt" # job standard error file (%j replaced by job id)
+
+jobID=${SLURM_JOB_ID}        # jobID is used when saving results and
+
+module load openjdk/11.0.17_8-ixtfxgw
+
+echo "I'm Running,  jobID: ${jobID} "
+date
+python3 genTest.py
+date
