@@ -1,0 +1,4 @@
+8 1 		# number of functional tests, number of inputs per test
+true true true false true true false false expected
+36 78 42 247 42 138 155 217
+entropy
